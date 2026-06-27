@@ -109,6 +109,7 @@ export const CallProvider = ({ children }) => {
                 });
             }
         } catch (err) {
+            console.error(err);
             toast.error("Failed to generate call offer.");
             resetCallState();
         }
@@ -143,6 +144,7 @@ export const CallProvider = ({ children }) => {
                 socket.emit("answerCall", { to: callInfo.id, signal: answer });
             }
         } catch (err) {
+            console.error(err);
             toast.error("Error connecting the call.");
             resetCallState();
         }
