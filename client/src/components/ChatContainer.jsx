@@ -63,15 +63,13 @@ const ChatContainer = () => {
             {selectedUser.fullName}
             {onlineUsers.includes(selectedUser._id) && <span className="w-2 h-2 rounded-full bg-green-500"></span>}
         </p>
-        {onlineUsers.includes(selectedUser._id) && (
-            <button 
-                onClick={() => callUser(selectedUser._id, selectedUser.fullName)}
-                className="p-1.5 hover:bg-stone-700/40 rounded-full transition-all text-emerald-400 cursor-pointer"
-                title="Start Video Call"
-            >
-                <i className="fa-solid fa-video text-base"></i>
-            </button>
-        )}
+        <button 
+            onClick={() => callUser(selectedUser._id, selectedUser.fullName)}
+            className="p-1.5 hover:bg-stone-700/40 rounded-full transition-all text-emerald-400 cursor-pointer"
+            title="Start Video Call"
+        >
+            <i className="fa-solid fa-video text-base"></i>
+        </button>
         <img onClick={()=> setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7'/>
         <img src={assets.help_icon} alt="" className='max-md:hidden max-w-5'/>
       </div>
