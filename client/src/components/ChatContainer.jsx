@@ -4,6 +4,7 @@ import { formatMessageTime } from '../lib/utils'
 import { ChatContext } from '../../context/ChatContext'
 import { AuthContext } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
+import { CallContext } from '../../context/CallContext'
 
 const ChatContainer = () => {
 
@@ -11,6 +12,7 @@ const ChatContainer = () => {
         getMessages} = useContext(ChatContext)
 
     const { authUser, onlineUsers } = useContext(AuthContext)
+    const { callUser } = useContext(CallContext)
 
     const scrollEnd = useRef()
 
@@ -61,6 +63,15 @@ const ChatContainer = () => {
             {selectedUser.fullName}
             {onlineUsers.includes(selectedUser._id) && <span className="w-2 h-2 rounded-full bg-green-500"></span>}
         </p>
+        {onlineUsers.includes(selectedUser._id) && (
+            <button 
+                onClick={() => callUser(selectedUser._id, selectedUser.fullName)}
+                className="p-1.5 hover:bg-stone-700/40 rounded-full transition-all text-emerald-400 cursor-pointer"
+                title="Start Video Call"
+            >
+                <i className="fa-solid fa-video text-base"></i>
+            </button>
+        )}
         <img onClick={()=> setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7'/>
         <img src={assets.help_icon} alt="" className='max-md:hidden max-w-5'/>
       </div>

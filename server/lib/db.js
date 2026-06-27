@@ -4,7 +4,11 @@ import mongoose from "mongoose";
 export const connectDB = async () =>{
     try {
         mongoose.connection.on('connected', ()=> console.log('Database Connected'));
-       await mongoose.connect(`${process.env.MONGODB_URI}/chat-app`) 
+        let uri = process.env.MONGODB_URI;
+        if (uri.endsWith('/')) {
+            uri = uri.slice(0, -1);
+        }
+        await mongoose.connect(`${uri}/chat-app`); 
     } catch (error) {
         console.log(error);
     }

@@ -29,6 +29,35 @@ io.on("connection", (socket)=>{
     // Emit online users to all connected clients
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
+    // WebRTC Signaling Handlers
+    socket.on("callUser", ({ userToCall, signalData, from, name }) => {
+        const targetSocket = userSocketMap[userToCall];
+        if (targetSocket) {
+            io.to(targetSocket).emit("callUser", { signal: signalData, from, name });
+        }
+    });
+
+    socket.on("answerCall", ({ to, signal }) => {
+        const targetSocket = userSocketMap[to];
+        if (targetSocket) {
+            io.to(targetSocket).emit("callAccepted", signal);
+        }
+    });
+
+    socket.on("iceCandidate", ({ to, candidate }) => {
+        const targetSocket = userSocketMap[to];
+        if (targetSocket) {
+            io.to(targetSocket).emit("iceCandidate", candidate);
+        }
+    });
+
+    socket.on("endCall", ({ to }) => {
+        const targetSocket = userSocketMap[to];
+        if (targetSocket) {
+            io.to(targetSocket).emit("callEnded");
+        }
+    });
+
     socket.on("disconnect", ()=>{
         console.log("User Disconnected", userId);
         delete userSocketMap[userId];
