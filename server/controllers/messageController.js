@@ -89,7 +89,7 @@ export const sendMessage = async (req, res) =>{
         res.json({success: true, newMessage});
 
     } catch (error) {
-        console.log(error.message);
+        console.error("Error sending message:", error);
         res.json({success: false, message: error.message})
     }
 }
