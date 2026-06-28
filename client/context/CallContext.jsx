@@ -52,7 +52,15 @@ export const CallProvider = ({ children }) => {
             }
             return stream;
         } catch (err) {
-            toast.error("Camera and Microphone permissions are required to call.");
+            if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+                toast.error("Camera and Microphone permissions were denied. Please allow them in your browser.");
+            } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+                toast.error("No camera or microphone hardware found on your system.");
+            } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+                toast.error("Camera or microphone is already in use by another application (e.g. Zoom, Teams).");
+            } else {
+                toast.error(`Media access error: ${err.message}`);
+            }
             console.error("Local media error:", err);
             return null;
         }
@@ -195,6 +203,12 @@ export const CallProvider = ({ children }) => {
                 try {
                     await peerConnection.current.setRemoteDescription(new RTCSessionDescription(signal));
                     setCallState("connected");
+
+                    // Process pending ICE candidates gathered before call acceptance
+                    while (pendingCandidates.current.length > 0) {
+                        const candidate = pendingCandidates.current.shift();
+                        await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+                    }
                 } catch (err) {
                     console.error("Accept description error:", err);
                 }
@@ -226,7 +240,7 @@ export const CallProvider = ({ children }) => {
             socket.off("iceCandidate");
             socket.off("callEnded");
         };
-    }, [socket, localStream]);
+    }, [socket]);
 
     // Bind local video element stream object updates
     useEffect(() => {
