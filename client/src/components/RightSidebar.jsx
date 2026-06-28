@@ -17,34 +17,70 @@ const RightSidebar = () => {
     },[messages])
 
   return selectedUser && (
-    <div className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll ${selectedUser ? "max-md:hidden" : ""}`}>
+    <div className={`bg-[#1e1f2c]/60 backdrop-blur-md border-l border-zinc-800 text-white w-full relative flex flex-col h-full ${selectedUser ? "max-md:hidden" : ""}`}>
 
-        <div className='pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto'>
-            <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
-            className='w-20 aspect-[1/1] rounded-full' />
-            <h1 className='px-10 text-xl font-medium mx-auto flex items-center gap-2'>
-                {onlineUsers.includes(selectedUser._id) && <p className='w-2 h-2 rounded-full bg-green-500'></p>}
-                {selectedUser.fullName}
-            </h1>
-            <p className='px-10 mx-auto'>{selectedUser.bio}</p>
-        </div>
-
-        <hr className="border-[#ffffff50] my-4"/>
-
-        <div className="px-5 text-xs">
-            <p>Media</p>
-            <div className='mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80'>
-                {msgImages.map((url, index)=>(
-                    <div key={index} onClick={()=> window.open(url)} className='cursor-pointer rounded'>
-                        <img src={url} alt="" className='h-full rounded-md'/>
-                    </div>
-                ))}
+        {/* User Info Header */}
+        <div className='pt-12 pb-6 flex flex-col items-center gap-3 text-xs font-light text-center px-4'>
+            <div className="relative">
+                <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
+                     className='w-24 h-24 rounded-full border-2 border-indigo-500/30 object-cover shadow-lg' />
+                {onlineUsers.includes(selectedUser._id) && (
+                    <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-[#1e1f2c] animate-pulse"></span>
+                )}
+            </div>
+            <div>
+                <h1 className='text-lg font-semibold tracking-wide text-zinc-100'>
+                    {selectedUser.fullName}
+                </h1>
+                <p className='text-zinc-400 text-xs mt-1 italic max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap'>
+                    {selectedUser.bio || "No bio updated"}
+                </p>
             </div>
         </div>
 
-        <button onClick={()=> logout()} className='absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer'>
-            Logout
-        </button>
+        <hr className="border-zinc-800 mx-5 my-2"/>
+
+        {/* Shared Media Gallery */}
+        <div className="px-5 py-3 flex-1 flex flex-col min-h-0">
+            <div className="flex items-center justify-between text-xs font-medium text-zinc-400 mb-3">
+                <span className="uppercase tracking-wider">Shared Media</span>
+                <span className="bg-zinc-800 text-zinc-300 px-2.5 py-0.5 rounded-full font-bold">
+                    {msgImages.length} {msgImages.length === 1 ? 'file' : 'files'}
+                </span>
+            </div>
+
+            {msgImages.length > 0 ? (
+                <div className='flex-1 overflow-y-auto pr-1 grid grid-cols-3 gap-2 align-content-start scrollbar-thin scrollbar-thumb-zinc-800'>
+                    {msgImages.map((url, index)=>(
+                        <div 
+                            key={index} 
+                            onClick={()=> window.open(url)} 
+                            className='group cursor-pointer aspect-square rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 relative hover:border-indigo-500/50 transition-all'
+                        >
+                            <img src={url} alt="" className='w-full h-full object-cover group-hover:scale-110 transition-all duration-300'/>
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300">
+                                <i className="fa-solid fa-expand text-white text-sm"></i>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-40 px-4">
+                    <i className="fa-regular fa-image text-3xl mb-2 text-zinc-500"></i>
+                    <p className="text-xs">No media shared yet</p>
+                </div>
+            )}
+        </div>
+
+        {/* Bottom Actions */}
+        <div className="p-5 border-t border-zinc-850">
+            <button 
+                onClick={()=> logout()} 
+                className='w-full py-2.5 bg-zinc-800 hover:bg-red-950/40 hover:text-red-400 hover:border-red-900/50 border border-transparent rounded-xl text-xs font-medium tracking-wide transition-all shadow-md cursor-pointer'
+            >
+                <i className="fa-solid fa-right-from-bracket mr-2"></i> Logout
+            </button>
+        </div>
     </div>
   )
 }
